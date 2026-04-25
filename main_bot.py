@@ -3,7 +3,7 @@ from vkbottle import GroupEventType, GroupTypes, Keyboard, Text, VKAPIError
 from vkbottle.bot import Bot, Message
 from vkbottle import Keyboard, KeyboardButtonColor, Text, OpenLink
 from vkbottle.tools import DocMessagesUploader
-import os, ollama, asyncio, json
+import os, ollama, asyncio
 import beginner
 
 
