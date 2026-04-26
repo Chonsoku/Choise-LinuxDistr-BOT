@@ -4,13 +4,14 @@ from vkbottle.bot import Bot, Message
 from vkbottle import Keyboard, KeyboardButtonColor, Text, OpenLink
 from vkbottle.tools import DocMessagesUploader
 import os, ollama, asyncio
-import beginner
+import beginner, advanced
 
 
 client = Bot("vk1.a.3gkstFj9R0xjkojZ2w46S2ECIfU37peh6N0vOfaJpbhSjY2v_8vdYnrYMobpOGnCvbY0t0TwdQVnQkTpTO1F8mqLfUNTVoy4UGpgXJyYJHigjRJ-kK5jEGvh2GMBocKWLiPEa1nUOfEH7zf8T4Fda8Ed51FOjsD5HbnUYDBI9KD_18a0cAMK8S0GuOc2fCKjwqZTZEzisc7JHqrnPjr8nA")
 user_sessions = {}
 
 beginner.setup(client, user_sessions)
+advanced.setup(client, user_sessions)
 
 @client.on.private_message(text=['Привет', 'привет', 'Ку', 'ку', 'хай', 'Хай', 'ПРИВЕТ', 'КУ', 'ХАЙ'])
 async def hello_message(message: Message):
@@ -21,8 +22,7 @@ async def hello_message(message: Message):
     await message.answer("| Напиши «Меню» или «Начать», чтобы чат-бот приступил к работе | =>")
 
 
-@client.on.private_message(text=['Начать', 'начать', 'Меню', 'меню'])
-@client.on.private_message(payload={'cmd': 'menu'})
+@client.on.private_message(text=['Начать', 'начать', 'НАЧАТЬ', 'Меню', 'меню', 'МЕНЮ'])
 async def menu(message: Message):
     await message.answer(
         message = '- Ты новичок, и хочешь опробовать что-то новое?\n - Или ты уже опытный пользователь дистрибутивов линукса?',
@@ -40,33 +40,48 @@ async def menu(message: Message):
             .add(Text('😎 | ОПЫТНЫЙ ПОЛЬЗОВАТЕЛЬ | 😎'), color=KeyboardButtonColor.NEGATIVE)
             )
     )
-
 @client.on.private_message(text=['😶‍🌫️ | НОВИЧОК | 😶‍🌫️'])
 async def start_beginner(message: Message):
     await beginner.beginner_quiz(message)
-
-# @client.on.private_message(text=['😎 | ОПЫТНЫЙ ПОЛЬЗОВАТЕЛЬ | 😎'])
-# async def start_advanced(message: Message):
-#     await advanced.advanced_quiz(message)
+@client.on.private_message(text=['😎 | ОПЫТНЫЙ ПОЛЬЗОВАТЕЛЬ | 😎'])
+async def start_advanced(message: Message):
+    await advanced.advanced_quiz(message)
 
 
 @client.on.private_message()
-async def handle_next_question(message: Message):
-    user_id = message.from_id
-    if user_id in user_sessions:
-        session = user_sessions[user_id]
-        step = session["step"]
-        session["answers"][f"q{step}"] = message.text
-        session["step"] += 1
-    
-        now_step = session["step"]
-        print(f"Текущий вопрос: {now_step}")
-        if now_step in beginner.QUESTIONS:
-            await beginner.QUESTIONS[now_step](message)
+async def beginner_next_question(message: Message):
+    user_id = message.from_id    
+    session = user_sessions[user_id]
+    if "step_begin" in session:
+        step_begin = session["step_begin"]
+        session["answers"][f"q{step_begin}"] = message.text
+        session["step_begin"] += 1
+        now_step_begin = session["step_begin"]
+        print(f"Текущий вопрос: {now_step_begin}")
+        if now_step_begin in beginner.QUESTIONS:
+            await beginner.QUESTIONS[now_step_begin](message)
         else:
             del user_sessions[user_id]
             await message.answer("✅ | ОПРОС НОВИЧКА ЗАВЕРШЁН | ✅")
-            print(beginner.QUESTIONS)
+            print("| ОПРОС НОВИЧКА ЗАВЕРШЁН |\n")
+
+    elif "step_advance" in session:
+        step_advance = session["step_advance"]
+        session["answers"][f"q{step_advance}"] = message.text
+        session["step_advance"] += 1
+        now_step_advance = session["step_advance"]
+        print(f"Текущий вопрос: {now_step_advance}")
+        if now_step_advance in advanced.QUESTIONS:
+            await advanced.QUESTIONS[now_step_advance](message)
+        else:
+            del user_sessions[user_id]
+            await message.answer("✅ | ОПРОС ОПЫТНОГО ПОЛЬЗОВАТЕЛЯ ЗАВЕРШЁН | ✅")
+            print("| ОПРОС ОПЫТНОГО ПОЛЬЗОВАТЕЛЯ ЗАВЕРШЁН |\n")
+    else:
+        del user_sessions[user_id]
+
+
+
 
 if __name__ == "__main__":
     client.run_forever()
