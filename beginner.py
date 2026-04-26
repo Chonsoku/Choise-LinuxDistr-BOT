@@ -78,7 +78,23 @@ async def question4(message: Message):
     await message.answer(f"4. Что тебя ПУГАЕТ в переходе на Linux?", keyboard=kb)
 
 
+async def question5(message: Message):
+    kb = (
+        Keyboard(one_time=False, inline=False)
+        .add(Text("Сёрфинг и общение в интернете"), color=KeyboardButtonColor.SECONDARY)
+        .add(Text('Работа с документами (Word, Excel'), color=KeyboardButtonColor.SECONDARY)
+        .row()
+        .add(Text('Программирование'), color=KeyboardButtonColor.SECONDARY)
+        .add(Text('Игры'), color=KeyboardButtonColor.SECONDARY)
+        .row()
+        .add(Text('Работа с графикой/видео'), color=KeyboardButtonColor.SECONDARY)
+		.add(Text('Все и сразу!'), color=KeyboardButtonColor.PRIMARY)
+    )
+    await message.answer(f"5. Для каких задач тебе нужен Linux?", keyboard=kb)
+
+
 QUESTIONS[1] = question1
 QUESTIONS[2] = question2
 QUESTIONS[3] = question3
 QUESTIONS[4] = question4
+QUESTIONS[5] = question5
