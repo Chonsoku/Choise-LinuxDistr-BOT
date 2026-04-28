@@ -65,6 +65,7 @@ async def question3(message: Message):
         .add(Text('bspwm'), color=KeyboardButtonColor.SECONDARY)
         .add(Text('dwm'), color=KeyboardButtonColor.SECONDARY)
         .row()
+        .add(Text('Niri'), color=KeyboardButtonColor.SECONDARY)
         .add(Text('Использую полноценное DE, вместо WM'), color=KeyboardButtonColor.SECONDARY)
         .row()
         .add(Text('Другое...'), color=KeyboardButtonColor.PRIMARY)
