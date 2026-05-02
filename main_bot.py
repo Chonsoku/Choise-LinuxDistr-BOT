@@ -1,10 +1,12 @@
+import os, ollama, asyncio
+import beginner, advanced
+
 from typing import Optional
 from vkbottle import GroupEventType, GroupTypes, Keyboard, Text, VKAPIError
 from vkbottle.bot import Bot, Message
 from vkbottle import Keyboard, KeyboardButtonColor, Text, OpenLink
 from vkbottle.tools import DocMessagesUploader
-import os, ollama, asyncio
-import beginner, advanced
+from ollamaL import User_chat_Ollama
 
 
 client = Bot("vk1.a.3gkstFj9R0xjkojZ2w46S2ECIfU37peh6N0vOfaJpbhSjY2v_8vdYnrYMobpOGnCvbY0t0TwdQVnQkTpTO1F8mqLfUNTVoy4UGpgXJyYJHigjRJ-kK5jEGvh2GMBocKWLiPEa1nUOfEH7zf8T4Fda8Ed51FOjsD5HbnUYDBI9KD_18a0cAMK8S0GuOc2fCKjwqZTZEzisc7JHqrnPjr8nA")
@@ -12,6 +14,104 @@ user_sessions = {}
 
 beginner.setup(client, user_sessions)
 advanced.setup(client, user_sessions)
+
+async def get_distribution_recommendation(level: str, answers: dict) -> str:
+    answers_text = str(answers)
+    """
+    Получает рекомендацию дистрибутива от Ollama на основе ответов пользователя
+    """
+    chat = User_chat_Ollama()
+    if level == "beginner":
+        prompt = f"""Ты дружелюбный и приветливый эксперт по Linux. На основе ответов НОВИЧКА (новичок), который хочет перейти на Linux, 
+        дай ему персонализированную рекомендацию дистрибутива.
+
+ВОТ ОТВЕТЫ ПОЛЬЗОВАТЕЛЯ:
+{answers_text}
+
+ПРАВИЛА ФОРМАТИРОВАНИЯ ОТВЕТА:
+1. Начни с ASCII-логотипа рекомендованного дистрибутива (бери из neofetch; fastfetch; ..)
+2. Затем напиши название дистрибутива жирным
+3. Дай небольшое описание дистрибутива (2-3 предложения)
+4. Объясни, ПОЧЕМУ именно этот дистрибутив подходит этому пользователю (опираясь на его ответы)
+5. Затем перечисли 4 других дистрибутива, которые тоже могут подойти, с кратким пояснением
+
+ФОРМАТ ОТВЕТА (используй эмодзи для красоты):
+
+[ASCII-логотип дистрибутива]
+
+Название дистрибутива
+
+📖 Описание:
+[небольшое описание]
+
+🎯 Почему именно вам:
+• [причина 1, связанная с ответами пользователя]
+• [причина 2]
+• [причина 3]
+
+🔄 Другие варианты:
+• Дистрибутив 2 - [почему может подойти]
+• Дистрибутив 3 - [почему может подойти]
+• Дистрибутив 4 - [почему может подойти]
+• Дистрибутив 5 - [почему может подойти]
+
+💡 Совет: [короткий практический совет]
+
+Порекомендуй ТОЛЬКО дружественные новичкам дистрибутивы: Ubuntu, Linux Mint, Zorin OS, Pop!_OS, Fedora, elementary OS.
+Не предлагай Arch, Gentoo, Void и другие сложные дистрибутивы."""
+    
+    else:  # advanced
+        prompt = f"""Ты эксперт по Linux с глубокими знаниями популярных и редких дистрибутивов. 
+        На основе ответов ОПЫТНОГО ПОЛЬЗОВАТЕЛЯ дай ему точную рекомендацию.
+
+ВОТ ОТВЕТЫ ПОЛЬЗОВАТЕЛЯ:
+{answers_text}
+
+УЧТИ ЭТИ ПАРАМЕТРЫ:
+- Предпочитаемое окружение рабочего стола (DE)
+- Init system (systemd, OpenRC, runit, s6)
+- Протокол графического сервера (Xorg, Wayland)
+- Пакетный менеджер
+- Модель обновления (rolling, стабильный)
+- Готовность к компиляции из исходников
+- Предпочтения GUI/CLI
+
+ПРАВИЛА ФОРМАТИРОВАНИЯ ОТВЕТА:
+1. Начни с ASCII-логотипа рекомендованного дистрибутива (бери из neofetch; fastfetch; ..)
+2. Затем напиши название дистрибутива жирным
+3. Дай небольшое описание дистрибутива
+4. Объясни, ПОЧЕМУ именно этот дистрибутив подходит (техническое обоснование)
+5. Перечисли 4 других дистрибутива (включая нишевые: Gentoo, Void, NixOS, Artix и др.)
+
+ФОРМАТ ОТВЕТА:
+
+[ASCII-логотип дистрибутива]
+
+**Название дистрибутива**
+
+📖 Описание:
+[небольшое описание]
+
+🎯 Техническое обоснование:
+• [почему подходит под его предпочтения]
+• [учёт init system, DE, пакетного менеджера]
+• [другие технические причины]
+
+🔄 Альтернативные варианты:
+• Дистрибутив 2 - [когда подойдёт лучше]
+• Дистрибутив 3 - [когда подойдёт лучше]
+• Дистрибутив 4 - [когда подойдёт лучше]
+• Дистрибутив 5 - [когда подойдёт лучше]
+
+⚠️ Особенности: [что важно знать перед установкой]
+
+Будь технически точен, но дружелюбен!"""
+
+    try:
+        answer = chat.add_question(prompt)
+        return answer
+    except Exception as e:
+        return f"Ошибка при обращении к Ollama: {str(e)}❌"
 
 @client.on.private_message(text=['Привет', 'привет', 'Ку', 'ку', 'хай', 'Хай', 'ПРИВЕТ', 'КУ', 'ХАЙ'])
 async def hello_message(message: Message):
@@ -64,6 +164,16 @@ async def beginner_next_question(message: Message):
             del user_sessions[user_id]
             await message.answer("✅ | ОПРОС НОВИЧКА ЗАВЕРШЁН | ✅")
             print("| ОПРОС НОВИЧКА ЗАВЕРШЁН |\n")
+            await asyncio.sleep(1)
+            await message.answer("⏲️ | ИДЁТ ФОРМИРОВАНИЕ ОТВЕТА... | ⏲️")
+            recommendation = await get_distribution_recommendation("beginner", session["answers"])
+            if len(recommendation) > 4000:
+                parts = [recommendation[i:i+4000] for i in range(0, len(recommendation), 4000)]
+                for part in parts:
+                    await message.answer(part)
+                    await asyncio.sleep(0.5)
+            else:
+                await message.answer(recommendation)
 
     elif "step_advance" in session:
         step_advance = session["step_advance"]
@@ -77,6 +187,16 @@ async def beginner_next_question(message: Message):
             del user_sessions[user_id]
             await message.answer("✅ | ОПРОС ОПЫТНОГО ПОЛЬЗОВАТЕЛЯ ЗАВЕРШЁН | ✅")
             print("| ОПРОС ОПЫТНОГО ПОЛЬЗОВАТЕЛЯ ЗАВЕРШЁН |\n")
+            await asyncio.sleep(1)
+            await message.answer("⏲️ | ИДЁТ ФОРМИРОВАНИЕ ОТВЕТА... | ⏲️")
+            recommendation = await get_distribution_recommendation("advanced", session["answers"])
+            if len(recommendation) > 4000:
+                parts = [recommendation[i:i+4000] for i in range(0, len(recommendation), 4000)]
+                for part in parts:
+                    await message.answer(part)
+                    await asyncio.sleep(0.5)
+            else:
+                await message.answer(recommendation)
     else:
         del user_sessions[user_id]
 
