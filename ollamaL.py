@@ -1,5 +1,3 @@
-# ollamaL.py - очищенная версия
-
 from litellm import completion
 
 MODEL = "ollama_chat/gemma4:e4b"
@@ -7,18 +5,24 @@ API_BASE = "http://127.0.0.1:11434"
 
 class User_chat_Ollama:
     def __init__(self):
+        print(f"Инициализация Ollama...")
+        print(f"   Модель: {MODEL}")
+        print(f"   API: {API_BASE}")
         self.messages = []
         self.MODEL = MODEL
         self.API_BASE = API_BASE
 
     def add_question(self, question: str) -> str:
+        print(f"Добавление вопроса в чат (длина: {len(question)} символов)")
         self.messages.append({"role": "user", "content": question})
+        print(f"Отправление запроса к Ollama...")
         response = completion(
             model=self.MODEL,
             messages=self.messages,
             api_base=self.API_BASE,
             request_timeout=360,
         )
+        print(f"Получен ответ от Ollama!")
         answer = response.choices[0].message.content
         self.messages.append({"role": "assistant", "content": answer})
         return answer
