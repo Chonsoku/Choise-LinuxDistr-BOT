@@ -18,7 +18,7 @@ async def advanced_quiz(message: Message):
 
 async def question1(message: Message):
     kb = (
-        Keyboard(one_time=False, inline=False)
+        Keyboard(one_time=True, inline=False)
         .add(Text('Debian-подобные'), color=KeyboardButtonColor.SECONDARY)
         .add(Text('Arch-подобные'), color=KeyboardButtonColor.SECONDARY)
         .row()
@@ -39,7 +39,7 @@ async def question1(message: Message):
 
 async def question2(message: Message):
     kb = (
-        Keyboard(one_time=False, inline=False)
+        Keyboard(one_time=True, inline=False)
         .add(Text('GNOME'), color=KeyboardButtonColor.SECONDARY)
         .add(Text('KDE Plasma'), color=KeyboardButtonColor.SECONDARY)
         .row()
@@ -55,7 +55,7 @@ async def question2(message: Message):
 
 async def question3(message: Message):
     kb = (
-        Keyboard(one_time=False, inline=False)
+        Keyboard(one_time=True, inline=False)
         .add(Text('i3/sway (тайловые)'), color=KeyboardButtonColor.SECONDARY)
         .add(Text('Awesome'), color=KeyboardButtonColor.SECONDARY)
         .row()
@@ -66,7 +66,7 @@ async def question3(message: Message):
         .add(Text('dwm'), color=KeyboardButtonColor.SECONDARY)
         .row()
         .add(Text('Niri'), color=KeyboardButtonColor.SECONDARY)
-        .add(Text('Использую полноценное DE, вместо WM'), color=KeyboardButtonColor.SECONDARY)
+        .add(Text('Использую полноценное DE'), color=KeyboardButtonColor.SECONDARY)
         .row()
         .add(Text('Другое...'), color=KeyboardButtonColor.PRIMARY)
     )
@@ -74,7 +74,7 @@ async def question3(message: Message):
 
 async def question4(message: Message):
     kb = (
-        Keyboard(one_time=False, inline=False)
+        Keyboard(one_time=True, inline=False)
         .add(Text('Systemd (Стандартный)'), color=KeyboardButtonColor.SECONDARY)
         .add(Text('OpenRC (Gentoo, Alpine)'), color=KeyboardButtonColor.SECONDARY)
         .row()
@@ -88,7 +88,7 @@ async def question4(message: Message):
 
 async def question5(message: Message):
     kb = (
-        Keyboard(one_time=False, inline=False)
+        Keyboard(one_time=True, inline=False)
         .add(Text('Xorg (X11)'), color=KeyboardButtonColor.SECONDARY)
         .add(Text('Wayland'), color=KeyboardButtonColor.SECONDARY)
         .row()
@@ -98,7 +98,7 @@ async def question5(message: Message):
 
 async def question6(message: Message):
     kb = (
-        Keyboard(one_time=False, inline=False)
+        Keyboard(one_time=True, inline=False)
         .add(Text('apt (Debian)'), color=KeyboardButtonColor.SECONDARY)
         .add(Text('pacman (Arch)'), color=KeyboardButtonColor.SECONDARY)
         .row()
@@ -121,18 +121,20 @@ async def question6(message: Message):
 
 async def question7(message: Message):
     kb = (
-        Keyboard(one_time=False, inline=False)
+        Keyboard(one_time=True, inline=False)
         .add(Text('Постоянные обновления (Rolling releases)'), color=KeyboardButtonColor.SECONDARY)
+        .row()
         .add(Text('Стабильные релизы (Stable releases)'), color=KeyboardButtonColor.SECONDARY)
         .row()
         .add(Text('Долгосрочная поддержка (LTS)'), color=KeyboardButtonColor.SECONDARY)
+        .row()
         .add(Text('Что-то среднее (Semi-rolling releases)'), color=KeyboardButtonColor.SECONDARY)
     )
     await message.answer(f"7. Модель обновления пакетов какая тебе больше нравится?", keyboard=kb)
 
 async def question8(message: Message):
     kb = (
-        Keyboard(one_time=False, inline=False)
+        Keyboard(one_time=True, inline=False)
         .add(Text('Только бинарные пакеты'), color=KeyboardButtonColor.SECONDARY)
         .row()
         .add(Text('Иногда приходится компилировать'), color=KeyboardButtonColor.SECONDARY)
@@ -143,7 +145,7 @@ async def question8(message: Message):
 
 async def question9(message: Message):
     kb = (
-        Keyboard(one_time=False, inline=False)
+        Keyboard(one_time=True, inline=False)
         .add(Text('Только GUI (графический интерфейс)'), color=KeyboardButtonColor.SECONDARY)
         .row()
         .add(Text('В основном GUI, но CLI тоже умею'), color=KeyboardButtonColor.SECONDARY)
@@ -155,7 +157,7 @@ async def question9(message: Message):
 
 async def question10(message: Message):
     kb = (
-        Keyboard(one_time=False, inline=False)
+        Keyboard(one_time=True, inline=False)
         .add(Text('GRUB (стандарт)'), color=KeyboardButtonColor.SECONDARY)
         .add(Text('systemd-boot'), color=KeyboardButtonColor.SECONDARY)
         .row()
@@ -169,7 +171,7 @@ async def question10(message: Message):
 
 async def question11(message: Message):
     kb = (
-        Keyboard(one_time=False, inline=False)
+        Keyboard(one_time=True, inline=False)
         .add(Text('Полностью устраивает'), color=KeyboardButtonColor.SECONDARY)
         .add(Text('Нейтрально. Работает и ладно'), color=KeyboardButtonColor.SECONDARY)
         .row()
@@ -180,7 +182,7 @@ async def question11(message: Message):
 
 async def question12(message: Message):
     kb = (
-        Keyboard(one_time=False, inline=False)
+        Keyboard(one_time=True, inline=False)
         .add(Text('Рабочая станция/десктоп'), color=KeyboardButtonColor.SECONDARY)
         .add(Text('Сервер (без GUI)'), color=KeyboardButtonColor.SECONDARY)
         .row()
@@ -194,7 +196,7 @@ async def question12(message: Message):
 
 async def question13(message: Message):
     kb = (
-        Keyboard(one_time=False, inline=False)
+        Keyboard(one_time=True, inline=False)
         .add(Text('Хорошая документация'), color=KeyboardButtonColor.SECONDARY)
         .add(Text('Активное сообщество'), color=KeyboardButtonColor.SECONDARY)
         .row()
@@ -208,7 +210,7 @@ async def question13(message: Message):
 
 async def question14(message: Message):
     kb = (
-        Keyboard(one_time=False, inline=False)
+        Keyboard(one_time=True, inline=False)
         .add(Text('Да, активно'), color=KeyboardButtonColor.SECONDARY)
         .add(Text('Иногда'), color=KeyboardButtonColor.SECONDARY)
         .row()
