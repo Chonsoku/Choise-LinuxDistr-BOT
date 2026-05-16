@@ -1,6 +1,7 @@
 import os, ollama, asyncio
 import beginner, advanced
 
+from pathlib import Path
 from typing import Optional
 from vkbottle import GroupEventType, GroupTypes, Keyboard, Text, VKAPIError
 from vkbottle.bot import Bot, Message
@@ -23,7 +24,7 @@ async def get_distribution_recommendation(level: str, answers: dict) -> str:
     chat = User_chat_Ollama()
     if level == "beginner":
         prompt = f"""Ты дружелюбный и приветливый эксперт по Linux. На основе ответов НОВИЧКА (новичок), который хочет перейти на Linux, 
-        дай ему персонализированную рекомендацию дистрибутива.
+        дай ему персонализированную рекомендацию дистрибутива. Пиши текст окуратно, не используя форматирование текста (типо ** или ```text)!
 
 ВОТ ОТВЕТЫ ПОЛЬЗОВАТЕЛЯ:
 {answers_text}
@@ -36,8 +37,6 @@ async def get_distribution_recommendation(level: str, answers: dict) -> str:
 5. Затем перечисли 4 других дистрибутива, которые тоже могут подойти, с кратким пояснением
 
 ФОРМАТ ОТВЕТА (используй эмодзи для красоты):
-
-[ASCII-логотип дистрибутива]
 
 Название дистрибутива
 
@@ -62,7 +61,7 @@ async def get_distribution_recommendation(level: str, answers: dict) -> str:
     
     else:  # advanced
         prompt = f"""Ты эксперт по Linux с глубокими знаниями популярных и редких дистрибутивов. 
-        На основе ответов ОПЫТНОГО ПОЛЬЗОВАТЕЛЯ дай ему точную рекомендацию.
+        На основе ответов ОПЫТНОГО ПОЛЬЗОВАТЕЛЯ дай ему точную рекомендацию. Пиши текст окуратно, не используя форматирование текста (типо ** или ```text)!
 
 ВОТ ОТВЕТЫ ПОЛЬЗОВАТЕЛЯ:
 {answers_text}
@@ -85,9 +84,8 @@ async def get_distribution_recommendation(level: str, answers: dict) -> str:
 
 ФОРМАТ ОТВЕТА:
 
-[ASCII-логотип дистрибутива]
 
-**Название дистрибутива**
+Название дистрибутива
 
 📖 Описание:
 [небольшое описание]
@@ -113,7 +111,7 @@ async def get_distribution_recommendation(level: str, answers: dict) -> str:
     except Exception as e:
         return f"Ошибка при обращении к Ollama: {str(e)}❌"
 
-@client.on.private_message(text=['Привет', 'привет', 'Ку', 'ку', 'хай', 'Хай', 'ПРИВЕТ', 'КУ', 'ХАЙ'])
+@client.on.private_message(text=['Привет', 'привет', 'пр', 'Пр', 'ПР', 'Ку', 'ку', 'хай', 'Хай', 'ПРИВЕТ', 'Привет!', 'ПРИВЕТ!', 'привет!' 'КУ', 'ХАЙ', 'прив', 'Прив'])
 async def hello_message(message: Message):
     await message.answer("Привет! 👋")
     await asyncio.sleep(1)
