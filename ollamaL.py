@@ -1,6 +1,6 @@
 from litellm import completion
 
-MODEL = "ollama_chat/llama2-uncensored:latest"
+MODEL = "ollama_chat/gemma4:31b-cloud"
 API_BASE = "http://127.0.0.1:11434"
 
 class User_chat_Ollama:
