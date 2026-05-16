@@ -18,7 +18,7 @@ async def beginner_quiz(message: Message):
 
 async def question1(message: Message):
     kb = (
-        Keyboard(one_time=False, inline=False)
+        Keyboard(one_time=True, inline=False)
         .add(Text('Windows 10/11'), color=KeyboardButtonColor.SECONDARY)
         .add(Text('Windows 7/8'), color=KeyboardButtonColor.SECONDARY)
         .row()
@@ -38,7 +38,7 @@ async def question1(message: Message):
 
 async def question2(message: Message):
     kb = (
-        Keyboard(one_time=False, inline=False)
+        Keyboard(one_time=True, inline=False)
         .add(Text('Редко (раз в неделю)'), color=KeyboardButtonColor.SECONDARY)
         .add(Text('Пару раз в неделю'), color=KeyboardButtonColor.SECONDARY)
         .row()
@@ -51,7 +51,7 @@ async def question2(message: Message):
 
 async def question3(message: Message):
     kb = (
-        Keyboard(one_time=False, inline=False)
+        Keyboard(one_time=True, inline=False)
         .add(Text('Привычный интерфейс'), color=KeyboardButtonColor.SECONDARY)
         .add(Text('Много программ и игр'), color=KeyboardButtonColor.SECONDARY)
         .row()
@@ -64,7 +64,7 @@ async def question3(message: Message):
       
 async def question4(message: Message):
     kb = (
-        Keyboard(one_time=False, inline=False)
+        Keyboard(one_time=True, inline=False)
         .add(Text('Сложность установки'), color=KeyboardButtonColor.SECONDARY)
         .add(Text('Боязнь терминала'), color=KeyboardButtonColor.SECONDARY)
         .row()
@@ -77,9 +77,9 @@ async def question4(message: Message):
     
 async def question5(message: Message):
     kb = (
-        Keyboard(one_time=False, inline=False)
+        Keyboard(one_time=True, inline=False)
         .add(Text("Сёрфинг и общение в интернете"), color=KeyboardButtonColor.SECONDARY)
-        .add(Text('Работа с документами (Word, Excel'), color=KeyboardButtonColor.SECONDARY)
+        .add(Text('Работа с документами (Word, Excel)'), color=KeyboardButtonColor.SECONDARY)
         .row()
         .add(Text('Программирование'), color=KeyboardButtonColor.SECONDARY)
         .add(Text('Игры'), color=KeyboardButtonColor.SECONDARY)
@@ -91,7 +91,7 @@ async def question5(message: Message):
 
 async def question6(message: Message):
     kb = (
-        Keyboard(one_time=False, inline=False)
+        Keyboard(one_time=True, inline=False)
         .add(Text("Хочу чтобы всё работало сразу"), color=KeyboardButtonColor.SECONDARY)
         .row()
         .add(Text("Могу немного покопаться в настройках"), color=KeyboardButtonColor.SECONDARY)
@@ -102,7 +102,7 @@ async def question6(message: Message):
 
 async def question7(message: Message):
     kb = (
-        Keyboard(one_time=False, inline=False)
+        Keyboard(one_time=True, inline=False)
         .add(Text("Очень важен (хочу красивый интерфейс)"), color=KeyboardButtonColor.SECONDARY)
         .row()
         .add(Text('Главное чтобы работало стабильно'), color=KeyboardButtonColor.SECONDARY)
@@ -113,7 +113,7 @@ async def question7(message: Message):
       
 async def question8(message: Message):
     kb = (
-        Keyboard(one_time=False, inline=False)
+        Keyboard(one_time=True, inline=False)
         .add(Text("Старый/слабый"), color=KeyboardButtonColor.SECONDARY)
         .add(Text('Средний'), color=KeyboardButtonColor.SECONDARY)
         .row()
@@ -124,7 +124,7 @@ async def question8(message: Message):
 
 async def question9(message: Message):
     kb = (
-        Keyboard(one_time=False, inline=False)
+        Keyboard(one_time=True, inline=False)
         .add(Text("Никогда"), color=KeyboardButtonColor.SECONDARY)
         .add(Text('Пару раз по инструкции в интернете'), color=KeyboardButtonColor.SECONDARY)
         .row()
