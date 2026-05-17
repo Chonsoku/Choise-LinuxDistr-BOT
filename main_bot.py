@@ -192,6 +192,12 @@ async def start_advanced(message: Message):
     await advanced.advanced_quiz(message)
 
 
+@client.on.private_message(text="⬅️ Назад")
+async def back_button_handler(message: Message):
+    from beginner import process_back_button
+    await process_back_button(message)
+
+
 @client.on.private_message()
 async def beginner_next_question(message: Message):
     user_id = message.from_id    
