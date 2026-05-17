@@ -11,6 +11,12 @@ def setup(bot_client, sessions_dict):
 
 QUESTIONS = {}
 
+def add_back_button(keyboard: Keyboard, show: bool = True) -> Keyboard:
+    if show:
+        keyboard.row()
+        keyboard.add(Text("⬅️ Назад"), color=KeyboardButtonColor.NEGATIVE)
+    return keyboard
+
 async def beginner_quiz(message: Message):
     user_sessions[message.from_id] = {"step_begin": 1, "answers": {}}
     await question1(message)
@@ -46,7 +52,9 @@ async def question2(message: Message):
         .add(Text('Целыми днями'), color=KeyboardButtonColor.SECONDARY)
         .row()
         .add(Text('Это моя работа'), color=KeyboardButtonColor.SECONDARY)
+        .row()
     )
+    kb = add_back_button(kb, show=True)
     await message.answer(f"2. Как часто ты пользуешься компьютером?", keyboard=kb)
 
 async def question3(message: Message):
@@ -59,7 +67,9 @@ async def question3(message: Message):
         .add(Text('Стабильность'), color=KeyboardButtonColor.SECONDARY)
         .row()
         .add(Text('Ничего не нравится'), color=KeyboardButtonColor.PRIMARY)
+        .row()
     )
+    kb = add_back_button(kb, show=True)
     await message.answer(f"3. Что тебе НРАВИТСЯ в твоей текущей ОС?", keyboard=kb)
       
 async def question4(message: Message):
@@ -72,7 +82,9 @@ async def question4(message: Message):
         .add(Text('Сложности с драйверами'), color=KeyboardButtonColor.SECONDARY)
         .row()
         .add(Text('Ничего не пугает'), color=KeyboardButtonColor.PRIMARY)
+        .row()
     )
+    kb = add_back_button(kb, show=True)
     await message.answer(f"4. Что тебя ПУГАЕТ в переходе на Linux?", keyboard=kb)
     
 async def question5(message: Message):
@@ -86,7 +98,9 @@ async def question5(message: Message):
         .row()
         .add(Text('Работа с графикой/видео'), color=KeyboardButtonColor.SECONDARY)
 		.add(Text('Все и сразу!'), color=KeyboardButtonColor.PRIMARY)
+        .row()
     )
+    kb = add_back_button(kb, show=True)
     await message.answer(f"5. Для каких задач тебе нужен Linux?", keyboard=kb)
 
 async def question6(message: Message):
@@ -97,7 +111,9 @@ async def question6(message: Message):
         .add(Text("Могу немного покопаться в настройках"), color=KeyboardButtonColor.SECONDARY)
         .row()
         .add(Text("Люблю настраивать всё вручную под себя"), color=KeyboardButtonColor.SECONDARY)
+        .row()
     )
+    kb = add_back_button(kb, show=True)
     await message.answer(f"6. Как ты относишься к настройке системы под себя?", keyboard=kb)
 
 async def question7(message: Message):
@@ -108,7 +124,9 @@ async def question7(message: Message):
         .add(Text('Главное чтобы работало стабильно'), color=KeyboardButtonColor.SECONDARY)
         .row()
         .add(Text("Что-то среднее"), color=KeyboardButtonColor.SECONDARY)
+        .row()
     )
+    kb = add_back_button(kb, show=True)
     await message.answer(f"7. Внешний вид системы для тебя важен?", keyboard=kb)
       
 async def question8(message: Message):
@@ -119,7 +137,9 @@ async def question8(message: Message):
         .row()
         .add(Text("Мощный"), color=KeyboardButtonColor.SECONDARY)
         .add(Text("Не знаю характеристик"), color=KeyboardButtonColor.PRIMARY)
+        .row()
     )
+    kb = add_back_button(kb, show=True)
     await message.answer(f"8. Какой у тебя компьютер?", keyboard=kb)
 
 async def question9(message: Message):
@@ -130,7 +150,9 @@ async def question9(message: Message):
         .row()
         .add(Text("Да, уверенно работаю"), color=KeyboardButtonColor.SECONDARY)
         .add(Text("Что это вообще такое?"), color=KeyboardButtonColor.PRIMARY)
+        .row()
     )
+    kb = add_back_button(kb, show=True)
     await message.answer(f"9. Пользовался ли ты командной строкой (терминалом)?", keyboard=kb)
 
 async def question10(message: Message):
@@ -143,9 +165,22 @@ async def question10(message: Message):
         .add(Text("Быстродействие"), color=KeyboardButtonColor.SECONDARY)
         .row()
         .add(Text("Совместимость с программами"), color=KeyboardButtonColor.SECONDARY)
+        .row()
     )
+    kb = add_back_button(kb, show=True)
     await message.answer(f"10. Что для тебя важнее всего в операционной системе?", keyboard=kb)
 
+
+async def process_back_button(message: Message):
+    user_id = message.from_id
+    session = user_sessions.get(user_id)
+
+    session["step_begin"] -= 1
+    
+    if session["answers"]:
+        session["answers"].popitem()                        # Удаление последнего, добавленного элемента из session
+    
+    await QUESTIONS[session["step_begin"]](message)
 
 
 QUESTIONS[1] = question1
