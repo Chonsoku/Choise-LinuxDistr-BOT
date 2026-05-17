@@ -54,9 +54,8 @@ async def get_distribution_recommendation(level: str, answers: dict) -> str:
         # distro_name_raw = chat.add_question(prompt_for_name).strip()
         # ascii_logo = get_ascii_logo(distro_name_raw)
         
-        prompt = f"""Ты дружелюбный и приветливый эксперт по Linux. На основе ответов НОВИЧКА (новичок), который хочет перейти на Linux, дай ему персонализированную рекомендацию дистрибутива. 
-        Порекомендуй ТОЛЬКО дружественные новичкам дистрибутивы: Ubuntu, Linux Mint, Zorin OS, Pop!_OS, Fedora, elementary OS.
-        Не предлагай Arch, Gentoo, Void и другие сложные дистрибутивы.
+        prompt = f"""Ты дружелюбный и приветливый эксперт по Linux. На основе ответов НОВИЧКА (новичок), 
+        который хочет перейти на Linux, дай ему персонализированную рекомендацию дистрибутива. 
         ОТВЕТЫ ПОЛЬЗОВАТЕЛЯ: {answers_text}
         А вот теперь пиши сам полный ответ. Пиши текст окуратно, не используя форматирование текста (типо ** или ```text)!
         
@@ -85,7 +84,7 @@ async def get_distribution_recommendation(level: str, answers: dict) -> str:
         • Дистрибутив 5 - [почему может подойти]
 
         💡 Совет: [короткий практический совет]
-        Порекомендуй ТОЛЬКО дружественные новичкам дистрибутивы: Ubuntu, Linux Mint, Zorin OS, Pop!_OS, Fedora, elementary OS. Не предлагай Arch, Gentoo, Void и другие сложные дистрибутивы.
+        Порекомендуй ТОЛЬКО дружественные новичкам дистрибутивы: Ubuntu, Linux Mint, Zorin OS, Pop!_OS, Fedora, elementary OS, Kali и многие другие..
         """
         text_response = chat.add_question(prompt)
         # return f"{ascii_logo}\n{text_response}"
@@ -138,7 +137,7 @@ async def get_distribution_recommendation(level: str, answers: dict) -> str:
         ПРАВИЛА ФОРМАТИРОВАНИЯ ОТВЕТА:
         1. Дай небольшое описание дистрибутива
         2. Объясни, ПОЧЕМУ именно этот дистрибутив подходит (техническое обоснование)
-        3. Перечисли 4 других дистрибутива (включая нишевые: Gentoo, Void, NixOS, Artix и др.)
+        3. Перечисли 4 других дистрибутива
 
         ФОРМАТ ОТВЕТА (используй эмодзи для красоты):
         ⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯
@@ -161,7 +160,8 @@ async def get_distribution_recommendation(level: str, answers: dict) -> str:
 
         ⚠️ Особенности: [что важно знать перед установкой]
 
-        Будь технически точен, но дружелюбен!"""
+        Будь технически точен, но дружелюбен, а также выбирай дистрибутивы наиболее точно соотвествующие запросом пользователя!
+        (например очень экзотические, такие как Qubes, LFS, Puppy, Tails, Kali, antiX и многие другие...)"""
         text_response = chat.add_question(prompt)
         # return f"{ascii_logo}\n{text_response}"
         return f"{text_response}"
@@ -209,8 +209,14 @@ async def start_advanced(message: Message):
 
 @client.on.private_message(text="⬅️ Назад")
 async def back_button_handler(message: Message):
-    from beginner import process_back_button
-    await process_back_button(message)
+    user_id = message.from_id    
+    session = user_sessions[user_id]
+    if "step_begin" in session:
+        from beginner import process_back_button
+        await process_back_button(message)
+    else:
+        from advanced import process_back_button
+        await process_back_button(message)
 
 
 @client.on.private_message()
@@ -264,6 +270,9 @@ async def beginner_next_question(message: Message):
                 await message.answer(recommendation)
     else:
         del user_sessions[user_id]
+
+
+
 
 if __name__ == "__main__":
     client.run_forever()
