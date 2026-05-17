@@ -1,4 +1,4 @@
-import os, ollama, asyncio, pyfiglet
+import os, ollama, asyncio, pyfiglet, re
 import beginner, advanced
 
 from pathlib import Path
@@ -16,9 +16,20 @@ user_sessions = {}
 beginner.setup(client, user_sessions)
 advanced.setup(client, user_sessions)
 
-def distro_to_ascii(distro_name: str, font: str="slant") -> str:
-    ascii_art = pyfiglet.figlet_format(distro_name, font=font)
-    return f"\n{ascii_art}\n"
+
+def get_ascii_logo(distro_name: str) -> str:
+    raw_ascii_art = pyfiglet.figlet_format(distro_name, font="slant")
+    processed_lines = []
+    for line in raw_ascii_art.splitlines():
+        fixed_line = line.replace(' ', '\u00A0')
+        processed_lines.append(fixed_line)
+    final_art = f"""
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯
+{chr(10).join(processed_lines)}
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯
+"""
+    return final_art
+
 
 async def get_distribution_recommendation(level: str, answers: dict) -> str:
     answers_text = str(answers)
@@ -41,7 +52,7 @@ async def get_distribution_recommendation(level: str, answers: dict) -> str:
         # Пример: Ubuntu
         # """
         # distro_name_raw = chat.add_question(prompt_for_name).strip()
-        # ascii_logo = distro_to_ascii(distro_name_raw)
+        # ascii_logo = get_ascii_logo(distro_name_raw)
         
         prompt = f"""Ты дружелюбный и приветливый эксперт по Linux. На основе ответов НОВИЧКА (новичок), который хочет перейти на Linux, дай ему персонализированную рекомендацию дистрибутива. 
         Порекомендуй ТОЛЬКО дружественные новичкам дистрибутивы: Ubuntu, Linux Mint, Zorin OS, Pop!_OS, Fedora, elementary OS.
@@ -55,7 +66,9 @@ async def get_distribution_recommendation(level: str, answers: dict) -> str:
         3. Затем перечисли 4 других дистрибутива, которые тоже могут подойти, с кратким пояснением
 
         ФОРМАТ ОТВЕТА (используй эмодзи для красоты):
+        ⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯
         🐧 Название:
+        ⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯
         
         📖 Описание:
         [небольшое описание]
@@ -102,7 +115,7 @@ async def get_distribution_recommendation(level: str, answers: dict) -> str:
         # Пример: Ubuntu
         # """
         # distro_name_raw = chat.add_question(prompt_for_name).strip()
-        # ascii_logo = distro_to_ascii(distro_name_raw)
+        # ascii_logo = get_ascii_logo(distro_name_raw)
         prompt = f"""Ты эксперт по Linux с глубокими знаниями популярных и редких дистрибутивов.
         ОТВЕТЫ ПОЛЬЗОВАТЕЛЯ: {answers_text}
         А вот теперь пищи сам полный ответ. Пиши текст окуратно, не используя форматирование текста (типо ** или ```text)!
@@ -127,8 +140,10 @@ async def get_distribution_recommendation(level: str, answers: dict) -> str:
         2. Объясни, ПОЧЕМУ именно этот дистрибутив подходит (техническое обоснование)
         3. Перечисли 4 других дистрибутива (включая нишевые: Gentoo, Void, NixOS, Artix и др.)
 
-        ФОРМАТ ОТВЕТА:
+        ФОРМАТ ОТВЕТА (используй эмодзи для красоты):
+        ⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯
         🐧 Название:
+        ⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯
         
         📖 Описание:
         [небольшое описание]
@@ -249,9 +264,6 @@ async def beginner_next_question(message: Message):
                 await message.answer(recommendation)
     else:
         del user_sessions[user_id]
-
-
-
 
 if __name__ == "__main__":
     client.run_forever()
