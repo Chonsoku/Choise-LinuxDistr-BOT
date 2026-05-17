@@ -269,12 +269,12 @@ async def process_back_button(message: Message):
     user_id = message.from_id
     session = user_sessions.get(user_id)
 
-    session["step_begin"] -= 1
+    session["step_advance"] -= 1
     
     if session["answers"]:
         session["answers"].popitem()                        # Удаление последнего, добавленного элемента из session
     
-    await QUESTIONS[session["step_begin"]](message)
+    await QUESTIONS[session["step_advance"]](message)
 
 
 QUESTIONS[1] = question1
