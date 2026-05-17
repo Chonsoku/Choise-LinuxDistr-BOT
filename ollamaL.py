@@ -1,7 +1,30 @@
 from litellm import completion
+import subprocess, time
 
 MODEL = "ollama_chat/gemma4:31b-cloud"
 API_BASE = "http://127.0.0.1:11434"
+
+def check_ollama():
+    try:
+        response = requests.get("http://127.0.0.1:11434", timeout=2)
+        if response.status_code == 200:
+            print("Ollama инициализированна")
+            return True
+    except:
+        pass
+    print("Запуск Ollama...")
+    try:
+        subprocess.Popen(
+            ["ollama", "serve"],
+            stdout=subprocess.DEVNULL,
+            stderr=subprocess.DEVNULL,
+            start_new_session=True
+        )
+        return False
+    except FileNotFoundError:
+        print("Ollama не установлена!\nУстановите на Linux && MacOS: curl -fsSL https://ollama.com/install.sh | sh\n Установите на Windows: irm https://ollama.com/install.ps1 | iex")
+        return False
+check_ollama()
 
 class User_chat_Ollama:
     def __init__(self):
